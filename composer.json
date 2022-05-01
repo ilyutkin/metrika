@@ -1,0 +1,87 @@
+{
+  "name": "rovereto/metrika",
+  "description": "Laravel Metrika is a lightweight, yet detailed package for tracking and recording user visits across your Laravel application. With only one simple query per request, important data is being stored, and later a cronjob crush numbers to extract meaningful stories from within the haystack.",
+  "type": "library",
+  "keywords": [
+    "user",
+    "model",
+    "laravel",
+    "eloquent",
+    "statistics",
+    "metrika",
+    "tracker",
+    "tracking",
+    "visitor",
+    "agents",
+    "client",
+    "views",
+    "device",
+    "logging",
+    "platform",
+    "browser"
+  ],
+  "license": "MIT",
+  "support": {
+    "email": "alexander@ilyutkin.ru",
+    "issues": "https://github.com/ilyutkin/metrika/issues",
+    "source": "https://github.com/ilyutkin/metrika",
+    "docs": "https://github.com/ilyutkin/metrika/blob/master/README.md"
+  },
+  "authors": [
+    {
+      "name": "Alexander Ilyutkin",
+      "email": "alexander@ilyutkin.ru",
+      "homepage": "http://ilyutkin.ru",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": "^8.0.0",
+    "geoip2/geoip2": "^2.0.0",
+    "illuminate/bus": "^9.0.0 || ^10.0.0",
+    "illuminate/console": "^9.0.0 || ^10.0.0",
+    "illuminate/contracts": "^9.0.0 || ^10.0.0",
+    "illuminate/database": "^9.0.0 || ^10.0.0",
+    "illuminate/http": "^9.0.0 || ^10.0.0",
+    "illuminate/queue": "^9.0.0 || ^10.0.0",
+    "illuminate/routing": "^9.0.0 || ^10.0.0",
+    "illuminate/support": "^9.0.0 || ^10.0.0",
+    "jenssegers/agent": "^2.6.0",
+    "snowplow/referer-parser": "~0.1",
+    "symfony/http-foundation": "^6.0.0",
+    "torann/geoip": "^3.0.0",
+    "ua-parser/uap-php": "^3.9.0"
+  },
+  "require-dev": {
+    "codedungeon/phpunit-result-printer": "^0.31.0",
+    "illuminate/container": "^9.0.0 || ^10.0.0",
+    "phpunit/phpunit": "^9.5.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Rovereto\\Metrika\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Rovereto\\Metrika\\Tests\\": "tests"
+    }
+  },
+  "scripts": {
+    "test": "vendor/bin/phpunit"
+  },
+  "config": {
+    "sort-packages": true,
+    "preferred-install": "dist",
+    "optimize-autoloader": true
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Rovereto\\Metrika\\Providers\\MetrikaServiceProvider"
+      ]
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
