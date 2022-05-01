@@ -10,7 +10,7 @@ Also inspired by the [Laravel Stats Tracker](https://github.com/antonioribeiro/t
 - Removed Rinvex dependencies
 
 [![Packagist](https://img.shields.io/packagist/v/rovereto/metrika.svg?label=Packagist&style=flat-square)](https://packagist.org/packages/rovereto/metrika)
-[![License](https://img.shields.io/packagist/l/rovereto/metrika.svg?label=License&style=flat-square)](https://github.com/ilyutkin/metrika/blob/develop/LICENSE)
+[![License](https://img.shields.io/packagist/l/rovereto/metrika.svg?label=License&style=flat-square)](https://github.com/ilyutkin/metrika/blob/develop/LICENSE.md)
 [![Packagist Downloads](https://img.shields.io/packagist/dt/rovereto/metrika?style=flat-square)](https://packagist.org/packages/rovereto/metrika)
 
 > **Description Rinvex Statistics**
