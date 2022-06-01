@@ -25,6 +25,7 @@ class Visitor extends Model
         'device_id',
         'platform_id',
         'language',
+        'is_robot',
         'created_at',
     ];
 
@@ -39,6 +40,7 @@ class Visitor extends Model
         'device_id' => 'integer',
         'platform_id' => 'integer',
         'language' => 'string',
+        'is_robot' => 'boolean',
         'created_at' => 'datetime',
     ];
 

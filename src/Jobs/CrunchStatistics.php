@@ -12,6 +12,7 @@ use Illuminate\Http\Request as LaravelRequest;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use Jaybizzle\CrawlerDetect\CrawlerDetect;
 use Jenssegers\Agent\Agent as UserAgent;
 use Snowplow\RefererParser\Parser as RefererParser;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
@@ -137,6 +138,7 @@ class CrunchStatistics implements ShouldQueue
             $user_agent = new UserAgent($item['server']);
             $UAParser = Parser::create()->parse($user_agent->getUserAgent());
             $kind = $user_agent->isDesktop() ? 'desktop' : ($user_agent->isTablet() ? 'tablet' : ($user_agent->isPhone() ? 'phone' : ($user_agent->isRobot() ? 'robot' : 'unknown')));
+            $CrawlerDetect = new CrawlerDetect;
 
             $agent = app('metrika.agent')->firstOrCreate([
                 'name' => $user_agent->getUserAgent(),
@@ -164,6 +166,7 @@ class CrunchStatistics implements ShouldQueue
                 'device_id' => $device->getKey(),
                 'platform_id' => $platform->getKey(),
                 'language' => $laravelRequest->getPreferredLanguage(),
+                'is_robot' => $CrawlerDetect->isCrawler($user_agent->getUserAgent()),
                 'created_at' => $item['created_at'],
             ]);
         }

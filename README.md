@@ -244,9 +244,9 @@ mentioned above coming from `New Haven` city, `Connecticut` state.
 
 #### Visitors
 
-| id | user_type | user_id | cookie_id | agent_id | device_id | platform_id | language | count  | created_at |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | user | 123 | ttivveoa18qc471vv9qfbg6qr1 | 123 | 123 | 123 | en_US | 55     | 2022-05-07 09:42:39 | 
+| id | user_type | user_id | cookie_id | agent_id | device_id | platform_id | language | is_robot | count  | created_at |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | user | 123 | ttivveoa18qc471vv9qfbg6qr1 | 123 | 123 | 123 | en_US | 0 | 55     | 2022-05-07 09:42:39 | 
 
 Unique visitors. Through `session_id`, `user_id` and `user_type` you can track guests (logged out) and users (logged in).
 
