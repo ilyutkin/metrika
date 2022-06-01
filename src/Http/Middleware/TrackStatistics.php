@@ -8,6 +8,7 @@ use Closure;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Rovereto\Metrika\Models\Datum;
@@ -82,8 +83,16 @@ class TrackStatistics
     {
         $currentUser = $request->user();
 
+        $cookie_id = $request->session()->getId();
+        if (config('metrika.store_cookie')) {
+            if($cookie_id = $request->cookie(config('metrika.cookie_name'))){
+                $cookie_after_decrypt = explode("|", Crypt::decryptString($cookie_id));
+                $cookie_id = array_pop($cookie_after_decrypt);
+            }
+        }
+
         Datum::create([
-            'cookie_id' => self::getCookie($request),
+            'cookie_id' => $cookie_id,
             'session_id' => $request->session()->getId(),
             'user_id' => $currentUser?->getKey(),
             'user_type' => $currentUser?->getMorphClass(),

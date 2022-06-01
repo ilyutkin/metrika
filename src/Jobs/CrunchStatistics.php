@@ -16,6 +16,7 @@ use Jaybizzle\CrawlerDetect\CrawlerDetect;
 use Jenssegers\Agent\Agent as UserAgent;
 use Snowplow\RefererParser\Parser as RefererParser;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use UAParser\Parser;
 
 class CrunchStatistics implements ShouldQueue
@@ -39,23 +40,29 @@ class CrunchStatistics implements ShouldQueue
 
                 LaravelRequest::enableHttpMethodParameterOverride();
                 $laravelRequest = LaravelRequest::createFromBase($symfonyRequest);
-                $laravelRoute = app('router')->getRoutes()->match($laravelRequest);
-                $laravelRequest->setRouteResolver(function () use ($laravelRoute) {
-                    return $laravelRoute;
-                });
 
-                $tokens = [];
-                collect($laravelRequest->route()->getCompiled()->getTokens())->map(function ($item) use (&$tokens) {
-                    return ($item = collect($item)) && $item->contains('variable') ? $tokens[$item[3]] = $item[2] : null;
-                });
-                $route = app('metrika.route')->firstOrCreate([
-                    'name' => $laravelRoute->getName() ?: $laravelRoute->uri(),
-                ], [
-                    'path' => $laravelRoute->uri(),
-                    'action' => $laravelRoute->getActionName(),
-                    'middleware' => $laravelRoute->gatherMiddleware() ?: null,
-                    'parameters' => $tokens ?: null,
-                ]);
+                try {
+                    $laravelRoute = app('router')->getRoutes()->match($laravelRequest);
+                    $laravelRequest->setRouteResolver(function () use ($laravelRoute) {
+                        return $laravelRoute;
+                    });
+
+                    $tokens = [];
+                    collect($laravelRequest->route()->getCompiled()->getTokens())->map(function ($item) use (&$tokens) {
+                        return ($item = collect($item)) && $item->contains('variable') ? $tokens[$item[3]] = $item[2] : null;
+                    });
+                    $route = app('metrika.route')->firstOrCreate([
+                        'name' => $laravelRoute->getName() ?: $laravelRoute->uri(),
+                    ], [
+                        'path' => $laravelRoute->uri(),
+                        'action' => $laravelRoute->getActionName(),
+                        'middleware' => $laravelRoute->gatherMiddleware() ?: null,
+                        'parameters' => $tokens ?: null,
+                    ]);
+                    $route_id = $route->getKey();
+                } catch (NotFoundHttpException $e) {
+                    $route_id = null;
+                }
 
                 $path = app('metrika.path')->firstOrCreate([
                     'host' => $laravelRequest->getHost(),
@@ -75,7 +82,7 @@ class CrunchStatistics implements ShouldQueue
                 app('metrika.hit')->create([
                     'visitor_id' => $visitor->getKey(),
                     'visit_id' => $visit->getKey(),
-                    'route_id' => $route->getKey(),
+                    'route_id' => $route_id,
                     'path_id' => $path->getKey(),
                     'referer_id' => $referer_id,
                     'status_code' => $item['status_code'],
