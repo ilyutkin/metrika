@@ -21,13 +21,13 @@ class CreateMetrikaGeoipsTable extends Migration
             $table->string('client_ip');
             $table->string('latitude');
             $table->string('longitude');
-            $table->char('country_code', 2)->nullable();
             $table->json('client_ips')->nullable();
             $table->boolean('is_from_trusted_proxy')->default(0);
+            $table->char('country_code', 2)->nullable();
             $table->string('division_code')->nullable();
-            $table->string('postal_code')->nullable();
-            $table->string('timezone')->nullable();
             $table->string('city')->nullable();
+            $table->string('timezone')->nullable();
+            $table->string('postal_code')->nullable();
             $table->integer('count')->unsigned()->default(0);
 
             // Indexes

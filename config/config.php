@@ -95,6 +95,7 @@ return [
         'secret_key',
         'pin',
         '_csrf',
+        '_token',
         'card_number',
         'card_owner',
     ],

@@ -19,13 +19,16 @@ class Geoip extends Model
         'client_ip',
         'latitude',
         'longitude',
-        'country_code',
         'client_ips',
         'is_from_trusted_proxy',
-        'division_code',
-        'postal_code',
-        'timezone',
+        'continent',
+        'country_code',
+        'country',
+        'subdivision_code',
+        'subdivision',
         'city',
+        'timezone',
+        'postal_code',
     ];
 
     /**
@@ -35,13 +38,16 @@ class Geoip extends Model
         'client_ip' => 'string',
         'latitude' => 'string',
         'longitude' => 'string',
-        'country_code' => 'string',
         'client_ips' => 'json',
         'is_from_trusted_proxy' => 'boolean',
-        'division_code' => 'string',
-        'postal_code' => 'string',
-        'timezone' => 'string',
+        'continent' => 'string',
+        'country_code' => 'string',
+        'country' => 'string',
+        'subdivision_code' => 'string',
+        'subdivision' => 'string',
         'city' => 'string',
+        'timezone' => 'string',
+        'postal_code' => 'string',
     ];
 
     /**
@@ -61,6 +67,11 @@ class Geoip extends Model
         $this->setTable(config('metrika.tables.geoips'));
 
         parent::__construct($attributes);
+    }
+
+    public function getDivisionCodeAttribute()
+    {
+        return $this->subdivision_code;
     }
 
     /**

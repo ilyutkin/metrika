@@ -16,6 +16,7 @@ use Jaybizzle\CrawlerDetect\CrawlerDetect;
 use Jenssegers\Agent\Agent as UserAgent;
 use Snowplow\RefererParser\Parser as RefererParser;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use UAParser\Parser;
 
@@ -61,6 +62,8 @@ class CrunchStatistics implements ShouldQueue
                     ]);
                     $route_id = $route->getKey();
                 } catch (NotFoundHttpException $e) {
+                    $route_id = null;
+                } catch (MethodNotAllowedHttpException $e) {
                     $route_id = null;
                 }
 
@@ -209,22 +212,23 @@ class CrunchStatistics implements ShouldQueue
 
         $ip = $laravelRequest->getClientIp();
 
-        $country_code = geoip($ip)->getAttribute('iso_code');
-        if ($country_code)
-            $country_code = mb_strtoupper($country_code);
+        $location = geoip($ip);
 
         $geoip = app('metrika.geoip')->firstOrCreate([
             'client_ip' => $ip = $laravelRequest->getClientIp(),
-            'latitude' => geoip($ip)->getAttribute('lat'),
-            'longitude' => geoip($ip)->getAttribute('lon'),
+            'latitude' => $location->getAttribute('lat'),
+            'longitude' => $location->getAttribute('lon'),
         ], [
             'client_ips' => $laravelRequest->getClientIps() ?: null,
-            'country_code' => $country_code,
             'is_from_trusted_proxy' => $laravelRequest->isFromTrustedProxy(),
-            'division_code' => geoip($ip)->getAttribute('state'),
-            'postal_code' => geoip($ip)->getAttribute('postal_code'),
-            'timezone' => geoip($ip)->getAttribute('timezone'),
-            'city' => geoip($ip)->getAttribute('city'),
+            'continent' => $location->getAttribute('continent'),
+            'country_code' => $location->getAttribute('iso_code'),
+            'country' => $location->getAttribute('country'),
+            'subdivision_code' => $location->getAttribute('state'),
+            'subdivision' => $location->getAttribute('state_name'),
+            'city' => $location->getAttribute('city'),
+            'timezone' => $location->getAttribute('timezone'),
+            'postal_code' => $location->getAttribute('postal_code'),
         ]);
 
         return app('metrika.visit')->create([

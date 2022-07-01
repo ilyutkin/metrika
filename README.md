@@ -60,12 +60,12 @@ Also inspired by the [Laravel Stats Tracker](https://github.com/antonioribeiro/t
    ```
    And create a database connection for it on your `config/database.php`
    ```php
-   'metrika' => [
+   'connections' => [
        'mysql' => [
            ...
        ],
        
-       'tracker' => [
+       'metrika' => [
            'driver'   => '...',
            'host'     => '...',
            'database' => ...,
@@ -136,6 +136,95 @@ app(\Rovereto\Metrika\Models\Agent::class)->first();
 ```
 
 Same for all other eloquent models.
+
+### Identify Geographical Location
+
+To determine the geographic location by ip address, the [GeoIP for Laravel (Torann\GeoIP)](https://github.com/Torann/laravel-geoip) 
+package is used.
+
+To customize the package, publish the configuration file:
+   ```shell
+   php artisan vendor:publish --provider="Torann\GeoIP\GeoIPServiceProvider" --tag=config
+   ```
+A configuration file will be publish to `config/geoip.php`.
+
+An example of using MaxMindDatabase:
+   ```php
+   ...
+   'service' => 'maxmind_database',
+   ...
+   'services' => [
+   ...
+        'maxmind_database' => [
+            'class' => \Torann\GeoIP\Services\MaxMindDatabase::class,
+            'database_path' => database_path('geoip/GeoLite2-City.mmdb'),
+            'update_url' => sprintf('https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=%s&suffix=tar.gz', env('MAXMIND_LICENSE_KEY')),
+            'locales' => ['en'],
+        ],
+   ...
+   ```
+
+The Torann\GeoIP package does not support IP2Location, but they have implemented support for this base.
+
+An example of using IP2Location:
+   ```php
+   ...
+   'service' => 'ip2location_database',
+   ...
+   'services' => [
+   ...
+        'ip2location_database' => [
+            'class' => \Rovereto\Metrika\Services\Ip2Location::class,
+            'database_path' => database_path('ip2location/IP2LOCATION.BIN'),
+        ],
+   ...
+   ```
+
+### Using cookie files
+
+Metrika may use anonymous identifiers to keep track of visitors, which are stored in a cookie. 
+Cookies are disabled by default. Enable them in the config file `config/metrika.php`, also give the cookie a name.
+An example:
+
+   ```php
+   ...
+   'store_cookie' => true,
+   ...
+   'cookie_name' => 'my_name_cookie_for_metrika',
+   ...
+   ```
+
+And set the first level domain for the cookie in the file `.env`:
+
+   ```
+   SESSION_DOMAIN=".my-domain.com"
+   ```
+
+or file `config/session.php`:
+
+   ```php
+   ...
+   'domain' => env('SESSION_DOMAIN', '.my-domain.com'),
+   ...
+   ```
+
+If you are using multiple subdomains, to identify the same user, disable cookie encryption for the Metrika in the file
+`app/Http/Middleware/EncryptCookies.php`:
+
+   ```php
+   ...
+   protected $except = [
+   ...
+       'my_name_cookie_for_metrika'
+   ...  
+   ];
+   ...
+   ```
+
+> **Notes:**
+> Each Laravel application encrypts cookies with its own key. Therefore, the cookies of one caller will be encrypted 
+> in different ways.
+
 
 ### Counts that matters
 
