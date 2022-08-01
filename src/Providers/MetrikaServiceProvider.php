@@ -15,6 +15,7 @@ use Rovereto\Metrika\Models\Geoip;
 use Rovereto\Metrika\Models\Hit;
 use Rovereto\Metrika\Models\Path;
 use Rovereto\Metrika\Models\Platform;
+use Rovereto\Metrika\Models\Query;
 use Rovereto\Metrika\Models\Referer;
 use Rovereto\Metrika\Models\Route;
 use Rovereto\Metrika\Models\Visit;
@@ -38,6 +39,7 @@ class MetrikaServiceProvider extends ServiceProvider
             'metrika.geoip' => Geoip::class,
             'metrika.route' => Route::class,
             'metrika.agent' => Agent::class,
+            'metrika.query' => Query::class,
             'metrika.visit' => Visit::class,
             'metrika.device' => Device::class,
             'metrika.domain' => Domain::class,

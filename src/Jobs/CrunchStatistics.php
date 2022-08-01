@@ -67,14 +67,9 @@ class CrunchStatistics implements ShouldQueue
                     $route_id = null;
                 }
 
-                $path = app('metrika.path')->firstOrCreate([
-                    'host' => $laravelRequest->getHost(),
-                    'path' => $laravelRequest->decodedPath(),
-                    'method' => $laravelRequest->getMethod(),
-                    'locale' => $laravelRequest->route('locale') ?? app()->getLocale(),
-                ], [
-                    'parameters' => $item['input'] ?: null,
-                ]);
+                $path_id = $this->findOrCreatePath($laravelRequest);
+
+                $query_id = $this->findOrCreateQuery($item['input']);
 
                 $referer_id = $this->findOrCreateReferer($laravelRequest);
 
@@ -86,7 +81,8 @@ class CrunchStatistics implements ShouldQueue
                     'visitor_id' => $visitor->getKey(),
                     'visit_id' => $visit->getKey(),
                     'route_id' => $route_id,
-                    'path_id' => $path->getKey(),
+                    'path_id' => $path_id,
+                    'query_id' => $query_id,
                     'referer_id' => $referer_id,
                     'status_code' => $item['status_code'],
                     'method' => $laravelRequest->getMethod(),
@@ -108,6 +104,34 @@ class CrunchStatistics implements ShouldQueue
                 dump($exception->getMessage());
             }
         });
+    }
+
+    protected function findOrCreatePath($laravelRequest)
+    {
+        $path = app('metrika.path')->firstOrCreate([
+            'host' => $laravelRequest->getHost(),
+            'path' => $this->getdecodedPath($laravelRequest->getPathInfo()),
+            'locale' => $laravelRequest->route('locale') ?? app()->getLocale(),
+        ]);
+
+        return $path->getKey();
+    }
+
+    protected function findOrCreateQuery($input)
+    {
+        if (empty($input)) {
+            return null;
+        }
+
+        $query = app('metrika.query')->where('query', json_encode($input))->first();
+
+        if (!$query) {
+            $query = app('metrika.query')->create([
+                'query' => $input,
+            ]);
+        }
+
+        return $query->getKey();
     }
 
     protected function findOrCreateReferer($laravelRequest)
@@ -240,5 +264,16 @@ class CrunchStatistics implements ShouldQueue
             'user_type' => $item['user_type'],
             'created_at' => $item['created_at'],
         ]);
+    }
+
+    protected function getdecodedPath($path)
+    {
+        $pattern = ltrim($path, '/');
+
+        if ($pattern === '') {
+            $pattern = '/';
+        }
+
+        return rawurldecode($pattern);
     }
 }

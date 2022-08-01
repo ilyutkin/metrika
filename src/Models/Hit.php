@@ -22,6 +22,7 @@ class Hit extends Model
         'visit_id',
         'route_id',
         'path_id',
+        'query_id',
         'referer_id',
         'status_code',
         'method',
@@ -43,6 +44,7 @@ class Hit extends Model
         'visit_id' => 'integer',
         'route_id' => 'integer',
         'path_id' => 'integer',
+        'query_id' => 'integer',
         'referer_id' => 'integer',
         'status_code' => 'integer',
         'method' => 'string',
@@ -137,6 +139,16 @@ class Hit extends Model
     public function path(): BelongsTo
     {
         return $this->belongsTo(config('metrika.models.path'), 'path_id', 'id', 'path');
+    }
+
+    /**
+     * The hit always belongs to a query.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function query_rel(): BelongsTo
+    {
+        return $this->belongsTo(config('metrika.models.query'), 'query_id', 'id', 'query');
     }
 
     /**

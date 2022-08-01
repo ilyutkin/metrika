@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Path extends Model
+class Query extends Model
 {
     use HasFactory;
 
@@ -16,18 +16,14 @@ class Path extends Model
      * {@inheritdoc}
      */
     protected $fillable = [
-        'host',
-        'locale',
-        'path',
+        'query'
     ];
 
     /**
      * {@inheritdoc}
      */
     protected $casts = [
-        'host' => 'string',
-        'locale' => 'string',
-        'path' => 'string',
+        'query' => 'json',
     ];
 
     /**
@@ -44,7 +40,7 @@ class Path extends Model
     {
         $this->setConnection(config('metrika.connection'));
 
-        $this->setTable(config('metrika.tables.paths'));
+        $this->setTable(config('metrika.tables.queries'));
 
         parent::__construct($attributes);
     }
@@ -56,6 +52,6 @@ class Path extends Model
      */
     public function hits(): HasMany
     {
-        return $this->hasMany(config('metrika.models.hit'), 'path_id', 'id');
+        return $this->hasMany(config('metrika.models.hit'), 'query_id', 'id');
     }
 }

@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](CONTRIBUTING.md).
 
+## [v1.3.0](https://github.com/ilyutkin/metrika/releases/tag/1.3.0) - 2022-08-01
+
+### Added
+
+- Added `query` table
+
+### Deleted
+
+- Deleted field `parameters`, `method` for `paths` table
+
 ## [v1.2.0](https://github.com/ilyutkin/metrika/releases/tag/1.2.0) - 2022-07-01
 
 ### Changed

@@ -261,14 +261,13 @@ This means there's 615 visits to our project through **Mac OS X** operating syst
 
 #### Paths
 
-| id | host | locale | path | parameters | count |
-| --- | --- | --- | --- | --- | --- |
-| 1 | test.homestead.local | en | en/adminarea/roles/admin | {"role": "admin", "locale": "en"} | 12 |
+| id | host | locale | path | count |
+| --- | --- | --- | --- | --- |
+| 1 | test.homestead.local | en | en/adminarea/roles/admin | 12 |
 
 This means there's 12 visits to the admin dashboard roles management of the **test.homestead.local** host (in case you
 have multiple hosts or wildcard subdomains enabled on the same project, you can track all of them correctly here). The
-english interface was used, and the accessed route had two parameters, one for locale (english in this case), and
-updated role record (admin in this case).
+english interface was used, one for locale (english in this case), and updated role record (admin in this case).
 
 This table could be used as a visit counter for all your pages. To retrieve and display page views you can use the
 following code for example:
@@ -280,6 +279,14 @@ $pageViews = app('metrika.path')->where('path', request()->decodedPath())->first
 And simply use the `$pageViews` variable anywhere in your views or controllers, or anywhere else. That way you have
 automatic visit counter for all your project's pages, very useful and performant, ready at your fingertips. You can
 add `host` contraint in case you have wildcard subdomains enabled.
+
+#### Queries
+
+| id | query |
+| --- | --- |
+| 1 | {"name":"Mike","city":"New York"} |
+
+Request parameters as json
 
 #### Routes
 
@@ -349,9 +356,9 @@ Unique visits. Through `session_id`, `user_id` and `user_type` you can track gue
 
 #### Hits
 
-| id | visitor_id | visit_id | route_id | path_id | referer_id | status_code | method   | protocol_version | is_no_cache | wants_json | is_secure | is_json | is_ajax | is_pjax | created_at |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | 123 | 123 | 123 | 123 | 123 | 200 | GET/POST | HTTP/1.1 | 0 | 0 | 1 | 0 | 0 | 0 | 2022-05-07 09:42:39 |
+| id | visitor_id | visit_id | route_id | path_id | query_id | referer_id | status_code | method   | protocol_version | is_no_cache | wants_json | is_secure | is_json | is_ajax | is_pjax | created_at |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | 123 | 123 | 123 | 123 | 123 | 123 | 200 | GET/POST | HTTP/1.1 | 0 | 0 | 1 | 0 | 0 | 0 | 2022-05-07 09:42:39 |
 
 This is the most comprehensive table that records every single request made to the project, with access details as seen
 in the sample above.
