@@ -170,37 +170,48 @@ class CrunchStatistics implements ShouldQueue
 
         if (!$visitor) {
             $user_agent = new UserAgent($item['server']);
-            $UAParser = Parser::create()->parse($user_agent->getUserAgent());
-            $kind = $user_agent->isDesktop() ? 'desktop' : ($user_agent->isTablet() ? 'tablet' : ($user_agent->isPhone() ? 'phone' : ($user_agent->isRobot() ? 'robot' : 'unknown')));
-            $CrawlerDetect = new CrawlerDetect;
 
-            $agent = app('metrika.agent')->firstOrCreate([
-                'name' => $user_agent->getUserAgent(),
-                'kind' => $kind,
-                'family' => $UAParser->ua->family,
-                'version' => $UAParser->ua->toVersion(),
-            ]);
+            $agent_id = $device_id = $platform_id = null;
+            $is_robot = 1;
 
-            $device = app('metrika.device')->firstOrCreate([
-                'family' => $UAParser->device->family,
-                'model' => $UAParser->device->model,
-                'brand' => $UAParser->device->brand,
-            ]);
+            if (!empty($user_agent->getUserAgent())) {
 
-            $platform = app('metrika.platform')->firstOrCreate([
-                'family' => $UAParser->os->family,
-                'version' => $UAParser->os->toVersion(),
-            ]);
+                $UAParser = Parser::create()->parse($user_agent->getUserAgent());
+                $kind = $user_agent->isDesktop() ? 'desktop' : ($user_agent->isTablet() ? 'tablet' : ($user_agent->isPhone() ? 'phone' : ($user_agent->isRobot() ? 'robot' : 'unknown')));
+                $CrawlerDetect = new CrawlerDetect;
 
+                $agent = app('metrika.agent')->firstOrCreate([
+                    'name' => $user_agent->getUserAgent(),
+                    'kind' => $kind,
+                    'family' => $UAParser->ua->family,
+                    'version' => $UAParser->ua->toVersion(),
+                ]);
+                $agent_id = $agent->getKey();
+
+                $device = app('metrika.device')->firstOrCreate([
+                    'family' => $UAParser->device->family,
+                    'model' => $UAParser->device->model,
+                    'brand' => $UAParser->device->brand,
+                ]);
+                $device_id = $device->getKey();
+
+                $platform = app('metrika.platform')->firstOrCreate([
+                    'family' => $UAParser->os->family,
+                    'version' => $UAParser->os->toVersion(),
+                ]);
+                $platform_id = $platform->getKey();
+
+                $is_robot = $CrawlerDetect->isCrawler($user_agent->getUserAgent());
+            }
             $visitor = app('metrika.visitor')->create([
                 'cookie_id' => $item['cookie_id'],
                 'user_id' => $item['user_id'],
                 'user_type' => $item['user_type'],
-                'agent_id' => $agent->getKey(),
-                'device_id' => $device->getKey(),
-                'platform_id' => $platform->getKey(),
+                'agent_id' => $agent_id,
+                'device_id' => $device_id,
+                'platform_id' => $platform_id,
                 'language' => $laravelRequest->getPreferredLanguage(),
-                'is_robot' => $CrawlerDetect->isCrawler($user_agent->getUserAgent()),
+                'is_robot' => $is_robot,
                 'created_at' => $item['created_at'],
             ]);
         }

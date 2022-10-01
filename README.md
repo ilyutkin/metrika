@@ -119,6 +119,7 @@ All eloquent models are self explainatory:
 - `\Rovereto\Metrika\Models\Hit` user hit model
 - `\Rovereto\Metrika\Models\Path` request path model
 - `\Rovereto\Metrika\Models\Platform` user platform model
+- `\Rovereto\Metrika\Models\Query` request parameters model 
 - `\Rovereto\Metrika\Models\Referer` request referer details model
 - `\Rovereto\Metrika\Models\Route` request route details model
 - `\Rovereto\Metrika\Models\Visit` visit model

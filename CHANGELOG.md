@@ -4,7 +4,13 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](CONTRIBUTING.md).
 
-## [v1.3.0](https://github.com/ilyutkin/metrika/releases/tag/1.3.0) - 2022-08-01
+## [v1.4.0](https://github.com/ilyutkin/metrika/releases/tag/v1.4.0) - 2022-10-01
+
+### Fixed
+
+- If no User-Agent, store agent_id, device_id, platform_id null
+
+## [v1.3.0](https://github.com/ilyutkin/metrika/releases/tag/v1.3.0) - 2022-08-01
 
 ### Added
 
