@@ -46,6 +46,28 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Enable detection the proxy
+    |--------------------------------------------------------------------------
+    |
+    | If you want to determine proxies, enable the setting.
+    |
+    */
+
+    'use_proxy' => false,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Filename of the BIN proxy database
+    |--------------------------------------------------------------------------
+    |
+    | If you are determine the proxy by ip address, set the filename of the bin database.
+    |
+    */
+
+    'proxy_path' => database_path('ip2location/IP2PROXY.BIN'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Statistics Crunching Lottery
     |--------------------------------------------------------------------------
     |

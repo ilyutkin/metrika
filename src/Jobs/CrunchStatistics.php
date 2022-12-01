@@ -14,6 +14,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Jaybizzle\CrawlerDetect\CrawlerDetect;
 use Jenssegers\Agent\Agent as UserAgent;
+use IP2Proxy\Database as IP2Proxy;
 use Snowplow\RefererParser\Parser as RefererParser;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
@@ -34,7 +35,7 @@ class CrunchStatistics implements ShouldQueue
      */
     public function handle(): void
     {
-        app('metrika.datum')->each(function ($item) {
+        app('metrika.datum')->orderBy('id')->each(function ($item) {
             try {
                 $symfonyRequest = SymfonyRequest::create($item['uri'], $item['server']['REQUEST_METHOD'], $item['input'] ?? [], [], [], $item['server']);
                 $symfonyRequest->overrideGlobals();
@@ -249,22 +250,48 @@ class CrunchStatistics implements ShouldQueue
 
         $location = geoip($ip);
 
-        $geoip = app('metrika.geoip')->firstOrCreate([
-            'client_ip' => $ip = $laravelRequest->getClientIp(),
-            'latitude' => $location->getAttribute('lat'),
-            'longitude' => $location->getAttribute('lon'),
-        ], [
-            'client_ips' => $laravelRequest->getClientIps() ?: null,
-            'is_from_trusted_proxy' => $laravelRequest->isFromTrustedProxy(),
-            'continent' => $location->getAttribute('continent'),
-            'country_code' => $location->getAttribute('iso_code'),
-            'country' => $location->getAttribute('country'),
-            'subdivision_code' => $location->getAttribute('state'),
-            'subdivision' => $location->getAttribute('state_name'),
-            'city' => $location->getAttribute('city'),
-            'timezone' => $location->getAttribute('timezone'),
-            'postal_code' => $location->getAttribute('postal_code'),
-        ]);
+        $proxy = [
+            'is_proxy' => $laravelRequest->isFromTrustedProxy(),
+            'proxy_type' => null,
+            'isp' => null,
+            'usage_type' => null,
+        ];
+
+        if (config('metrika.use_proxy')) {
+            $proxy_db = new IP2Proxy(config('metrika.proxy_path'), IP2Proxy::FILE_IO);
+            $proxy_record = $proxy_db->lookup($ip, IP2Proxy::ALL);
+
+            if(intval($proxy_record['isProxy']) > 0) {
+                $proxy['is_proxy'] = $proxy_record['isProxy'];
+                $proxy['proxy_type'] = $proxy_record['proxyType'];
+                $proxy['isp'] = $proxy_record['isp'];
+                $proxy['usage_type'] = $proxy_record['usageType'];
+            }
+        }
+
+        try {
+            $geoip = app('metrika.geoip')->firstOrCreate([
+                'client_ip' => $ip = $laravelRequest->getClientIp(),
+                'latitude' => $location->getAttribute('lat'),
+                'longitude' => $location->getAttribute('lon'),
+            ], [
+                'client_ips' => $laravelRequest->getClientIps() ?: null,
+                'is_proxy' => $proxy['is_proxy'],
+                'proxy_type' => $proxy['proxy_type'],
+                'isp' => $proxy['isp'],
+                'usage_type' => $proxy['usage_type'],
+                'continent' => $location->getAttribute('continent'),
+                'country_code' => $location->getAttribute('iso_code'),
+                'country' => $location->getAttribute('country'),
+                'subdivision_code' => $location->getAttribute('state'),
+                'subdivision' => $location->getAttribute('state_name'),
+                'city' => $location->getAttribute('city'),
+                'timezone' => $location->getAttribute('timezone'),
+                'postal_code' => $location->getAttribute('postal_code'),
+            ]);
+        } catch (Exception $e) {
+            dump($location);
+        }
 
         return app('metrika.visit')->create([
             'visitor_id' => $visitor->getKey(),

@@ -119,7 +119,6 @@ All eloquent models are self explainatory:
 - `\Rovereto\Metrika\Models\Hit` user hit model
 - `\Rovereto\Metrika\Models\Path` request path model
 - `\Rovereto\Metrika\Models\Platform` user platform model
-- `\Rovereto\Metrika\Models\Query` request parameters model 
 - `\Rovereto\Metrika\Models\Referer` request referer details model
 - `\Rovereto\Metrika\Models\Route` request route details model
 - `\Rovereto\Metrika\Models\Visit` visit model
@@ -178,6 +177,23 @@ An example of using IP2Location:
             'class' => \Rovereto\Metrika\Services\Ip2Location::class,
             'database_path' => database_path('ip2location/IP2LOCATION.BIN'),
         ],
+   ...
+   ```
+
+### Identify Proxy
+
+To determine the proxy by ip address, the [IP2Proxy PHP Module](https://github.com/ip2location/ip2proxy-php)
+package is used.
+
+Detection the proxy are disabled by default. Enable them in the config file `config/metrika.php`, 
+also write the filename of the bin database.
+
+An example of using determine the proxy:
+   ```php
+   ...
+   'use_proxy' => true,
+   ...
+   'proxy_path' => database_path('ip2location/IP2PROXY.BIN'),
    ...
    ```
 

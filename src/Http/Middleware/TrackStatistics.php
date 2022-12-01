@@ -9,7 +9,6 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use Rovereto\Metrika\Models\Datum;
 use Rovereto\Metrika\Jobs\CrunchStatistics;
 use Rovereto\Metrika\Jobs\CleanStatisticsRequests;
 
@@ -53,7 +52,7 @@ class TrackStatistics
     {
         $currentUser = $request->user();
 
-        Datum::create([
+        app('metrika.datum')::create([
             'cookie_id' => self::getCookie($request),
             'session_id' => $request->session()->getId(),
             'user_id' => $currentUser?->getKey(),
@@ -89,7 +88,7 @@ class TrackStatistics
             $cookie_id = $request->session()->getId();
         }
 
-        Datum::create([
+        app('metrika.datum')::create([
             'cookie_id' => $cookie_id,
             'session_id' => $request->session()->getId(),
             'user_id' => $currentUser?->getKey(),
