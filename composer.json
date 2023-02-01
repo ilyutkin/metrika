@@ -9,6 +9,7 @@
     "device",
     "eloquent",
     "ip2location",
+    "ip2proxy",
     "laravel",
     "logging",
     "maxmind",

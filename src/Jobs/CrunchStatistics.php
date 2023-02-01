@@ -167,6 +167,10 @@ class CrunchStatistics implements ShouldQueue
 
     protected function findOrCreateVisitor($item, $laravelRequest)
     {
+        if (is_null($item['cookie_id'])) {
+            $item['cookie_id'] = $item['session_id'];
+        }
+
         $visitor = app('metrika.visitor')->where('cookie_id', $item['cookie_id'])->first();
 
         if (!$visitor) {
