@@ -52,6 +52,10 @@ class MetrikaServiceProvider extends ServiceProvider
             $this->app->singleton($service, $model = $this->app['config'][Str::replaceLast('.', '.models.', $service)]);
             $model === $class || $this->app->alias($service, $class);
         }
+
+        $this->app->bind('Metrika', function () {
+            return new \Rovereto\Metrika\Metrika;
+        });
     }
 
     /**
@@ -68,6 +72,12 @@ class MetrikaServiceProvider extends ServiceProvider
             __DIR__ . '/../../database/migrations' => $this->app->databasePath('migrations')],
             'migrations'
         );
+
+        $this->publishes([
+            __DIR__ . '/../../resources/lang' => resource_path('lang/vendor/metrika'),
+        ]);
+
+        $this->loadTranslationsFrom(__DIR__.'/../../resources/lang', 'metrika');
 
         // Push middleware to web group
         $router->pushMiddlewareToGroup('web', TrackStatistics::class);

@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](CONTRIBUTING.md).
 
+## [v1.7.0](https://github.com/ilyutkin/metrika/releases/tag/v1.7.0) - 2023-06-01
+
+### Added
+
+- Added data analytics methods and usage example
+
 ## [v1.6.0](https://github.com/ilyutkin/metrika/releases/tag/v1.6.0) - 2023-02-01
 
 ### Fixed

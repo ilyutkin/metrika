@@ -243,6 +243,78 @@ If you are using multiple subdomains, to identify the same user, disable cookie 
 > in different ways.
 
 
+### Data usage
+
+Two class connection options Laravel Metrika
+```php
+use Rovereto\Metrika\Support\Facades\Metrika;
+```
+or
+```php
+use Metrika;
+```
+
+#### Most viewed pages for the selected period, count - $limit
+
+```php
+use Rovereto\Metrika\Support\Facades\Metrika;
+
+Metrika::getTopPageViewsForPeriod(DateTime $startDate, DateTime $endDate, int $limit = 10, bool $with_robots = false);
+//example Most viewed pages for period 01.01.2020 - 31.12.2020 limit 100 pages without robots
+Metrika::getTopPageViewsForPeriod(Carbon::parse('01.01.2020'), Carbon::parse('31.12.2020'), 100);
+```
+
+#### Graph number of: hits, visits, unique visitors by day
+Return an array for plotting a line graph
+
+```php
+use Rovereto\Metrika\Support\Facades\Metrika;
+
+Metrika::getHitsForPeriodLine(DateTime $startDate, DateTime $endDate, string $group = 'day', bool $with_robots = false);
+//example Hits for period 01.01.2020 - 31.12.2020 by month without robots
+Metrika::getHitsForPeriodLine(Carbon::parse('01.01.2020'), Carbon::parse('31.12.2020'), 'month');
+```
+
+#### Methods for building pie charts
+
+##### Graph pie source by period
+
+```php
+Metrika::getSourcesForPeriodPie(DateTime $startDate, DateTime $endDate, bool $with_robots = false);
+```
+
+##### Graph pie search system by period
+
+```php
+Metrika::getSearchEngineForPeriodPie(DateTime $startDate, DateTime $endDate, bool $with_robots = false);
+```
+
+##### Graph pie browsers by period
+
+```php
+Metrika::getBrowsersForPeriodPie(DateTime $startDate, DateTime $endDate, bool $with_robots = false);
+```
+
+##### Graph pie operating systems by period
+
+```php
+Metrika::getOsForPeriodPie(DateTime $startDate, DateTime $endDate, bool $with_robots = false);
+```
+
+##### Graph pie devices by period
+
+```php
+Metrika::getDevicesForPeriodPie(DateTime $startDate, DateTime $endDate, bool $with_robots = false);
+```
+
+##### Graph pie countries and regions by period
+
+```php
+Metrika::getCountryForPeriodPie(DateTime $startDate, DateTime $endDate, bool $with_robots = false);
+```
+
+> An example of usage is in the directory `examples`
+
 ### Counts that matters
 
 All agent, device, path, platform, route models have a `count` attribute, which gets updated automatically whenever a

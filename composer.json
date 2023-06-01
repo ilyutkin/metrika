@@ -87,7 +87,10 @@
     "laravel": {
       "providers": [
         "Rovereto\\Metrika\\Providers\\MetrikaServiceProvider"
-      ]
+      ],
+      "aliases": {
+        "Metrika": "Rovereto\\Metrika\\Support\\Facades\\Metrika"
+      }
     }
   },
   "minimum-stability": "dev",
